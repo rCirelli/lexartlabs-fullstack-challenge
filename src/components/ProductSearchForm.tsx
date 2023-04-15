@@ -3,9 +3,12 @@ import { ChangeEvent, useState } from 'react';
 import Dropdown from '@/components/Dropdown';
 
 function ProductSearchForm() {
+  const sourceOptions = ['Todas', 'Mercado Livre', 'Buscapé']
+  const categoryOptions = ['Geladeira', 'TV', 'Celular']
+
   const [formValues, setFormValues] = useState({
-    source: '',
-    category: '',
+    source: sourceOptions[0],
+    category: categoryOptions[0],
     search: '',
   });
 
@@ -22,12 +25,12 @@ function ProductSearchForm() {
     <div className="w-3/5 flex justify-center gap-4">
       <Dropdown
         inputName="Fonte"
-        options={['Todas', 'Mercado Livre', 'Buscapé']}
+        options={sourceOptions}
         handler={handleChange('source')}
       />
       <Dropdown
         inputName="Categorias"
-        options={['Geladeira', 'TV', 'Celular']}
+        options={categoryOptions}
         handler={handleChange('category')}
       />
       <input

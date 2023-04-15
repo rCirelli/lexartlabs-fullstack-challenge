@@ -10,8 +10,8 @@ export default function Dropdown({
   handler: ChangeEventHandler;
 }) {
   return (
-    <select name={inputName} onChange={handler}>
-      <option disabled selected>{inputName}</option>
+    <select name={inputName} onChange={handler} value={options[0]}>
+      <option disabled>{inputName}</option>
       {options.length > 0 &&
         options.map((option) => (
           <option value={option} key={option}>
