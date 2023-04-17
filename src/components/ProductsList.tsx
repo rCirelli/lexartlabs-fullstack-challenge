@@ -1,17 +1,14 @@
-import { Product } from "@/services/crawler";
-import Image from "next/image";
-import Link from "next/link";
+import { Product } from '@/services/crawler';
+import Image from 'next/image';
+import Link from 'next/link';
+import ProductCard from './ProductCard';
 
-function ProductsList({ products }: { products: Product[]}) {
+function ProductsList({ products }: { products: Product[] }) {
   return (
-    <ul>
+    <ul className='w-3/5 flex flex-col gap-5'>
       {products.map((product: Product) => (
         <li key={product.title}>
-          <Link href={product.link}>
-            <Image src={product.link} alt={product.title} width={160} height={160} style={{objectFit: "contain"}}/>
-            <h3>{product.title}</h3>
-            <h4>{product.price}</h4>
-          </Link>
+          <ProductCard product={product} />
         </li>
       ))}
     </ul>

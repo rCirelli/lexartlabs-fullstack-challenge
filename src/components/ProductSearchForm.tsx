@@ -36,12 +36,14 @@ function ProductSearchForm() {
         value={formValues.category}
       />
       <input
-        className="flex-grow"
+        className="flex-grow p-2 rounded-lg"
         type="search"
         onChange={handleChange('query')}
         value={formValues.query}
       />
-      <button onClick={() => setShouldFetch(true)}>Buscar</button>
+      <button onClick={() => setShouldFetch(true)} className="hover:bg-gray-300 py-2 px-4 rounded-lg">
+        Buscar
+      </button>
     </div>
   );
 }

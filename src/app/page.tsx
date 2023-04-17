@@ -1,5 +1,5 @@
 'use client';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import useSWR from 'swr';
 import { Inter } from 'next/font/google';
 import { formAtom, shouldFetchAtom } from '@/store';
@@ -17,12 +17,12 @@ export default function Home() {
     ([slug, source, category, query]) => (
       fetchProducts(slug, source as UrlParams['source'], category as UrlParams['category'], query as UrlParams['query'])
   ));
-
+  console.log(source, category, query);
   console.log(products);
 
   return (
     <main
-      className={`${inter.className} flex min-h-screen flex-col items-center justify-between p-24`}
+      className={`${inter.className} flex min-h-screen flex-col items-center justify-between p-10 gap-10`}
     >
       <ProductSearchForm />
       {
@@ -40,15 +40,14 @@ async function fetchProducts(
   category: UrlParams['category'],
   query: UrlParams['query']
 ) {
-  // const url = new URL('http://localhost:3000/api/products');
-  // const url = new URL('http://192.168.1.253:3000/api/products');
-  const url = new URL(`http://192.168.1.253:3000${slug}`);
+  const url = new URL(`http://localhost:3000${slug}`);
   url.searchParams.append('source', source);
   url.searchParams.append('category', category.toLowerCase());
   if (query !== '') {
     url.searchParams.append('query', query);
   }
-
+  console.log(url.href);
+  
   const response = await fetch(url.href);
   const products = await response.json();
   return Object.values(products) as Product[];

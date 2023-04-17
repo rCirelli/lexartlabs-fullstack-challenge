@@ -14,7 +14,7 @@ export default function Dropdown({
   value: string;
 }) {
   return (
-    <select name={inputName} onChange={handler} value={value}>
+    <select name={inputName} onChange={handler} value={value} className="p-2 bg-slate-300 rounded-lg">
       <option disabled>{inputName}</option>
       {options.length > 0 &&
         options.map((option, i) => (
