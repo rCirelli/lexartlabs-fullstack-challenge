@@ -1,61 +1,47 @@
 'use client';
 import { ChangeEvent } from 'react';
-import { shallow } from 'zustand/shallow';
 import Dropdown from '@/components/Dropdown'; 
-import { State, useFetchStore, useStore } from '@/store';
-import StoreInitializer from './StoreInitializer';
+import { formAtom, FormState, shouldFetchAtom } from '@/store';
+import { useAtom, useSetAtom } from 'jotai';
+import FormInitializer from './FormInitializer';
 
 function ProductSearchForm() {
   const sourceOptions = ['all', 'mercadoLivre', 'buscape']
   const sourceOptionNames = ['Todas', 'Mercado Livre', 'Buscapé']
   const categoryOptions = ['Geladeira', 'TV', 'Celular']
 
-  // const [formValues, setFormValues] = useState({
-  //   source: sourceOptions[0],
-  //   category: categoryOptions[0],
-  //   query: '',
-  // });
+  const setShouldFetch = useSetAtom(shouldFetchAtom);
+  const [formValues, setFormValues] = useAtom(formAtom);
 
-  const toggleShouldFetch = useFetchStore((state) => state.toggleShouldFetch);
-  const { source, category, query, setState } = useStore((state) => ({
-      source: state.source,
-      category: state.category,
-      query: state.query,
-      setState: state.setState,
-      // toggleShouldFetch: state.toggleShouldFetch,
-    }),
-    shallow
-  );
-
-  const handleChange = (field: keyof State) => {
+  const handleChange = (field: keyof FormState) => {
     return (e: ChangeEvent<HTMLInputElement>) => {
-      setState(field, e.target.value);
+      setFormValues({ ...formValues, [field]: e.target.value });
     };
   };
 
   return (
     <div className="w-3/5 flex justify-center gap-4">
-      <StoreInitializer source={sourceOptions[0]} category={categoryOptions[0]} query={''} />
+      <FormInitializer source={sourceOptions[0]} category={categoryOptions[0]} query={''} />
       <Dropdown
         inputName="Fonte"
         options={sourceOptions}
         optionNames={sourceOptionNames}
         handler={handleChange('source')}
-        value={source}
+        value={formValues.source}
       />
       <Dropdown
         inputName="Categorias"
         options={categoryOptions}
         handler={handleChange('category')}
-        value={category}
+        value={formValues.category}
       />
       <input
         className="flex-grow"
         type="search"
         onChange={handleChange('query')}
-        value={query}
+        value={formValues.query}
       />
-      <button onClick={toggleShouldFetch}>Search</button>
+      <button onClick={() => setShouldFetch(true)}>Buscar</button>
     </div>
   );
 }

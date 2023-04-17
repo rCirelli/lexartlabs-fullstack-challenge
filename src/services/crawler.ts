@@ -19,7 +19,7 @@ export type UrlParams = {
   query: string;
 }
 
-type Product = {
+export type Product = {
   image: string;
   title: string;
   price: string;

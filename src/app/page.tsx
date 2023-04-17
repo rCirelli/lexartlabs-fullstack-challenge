@@ -1,19 +1,48 @@
 'use client';
-import ProductSearchForm from '@/components/ProductSearchForm';
-import { UrlParams } from '@/services/crawler';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import useSWR from 'swr';
 import { Inter } from 'next/font/google';
-
-import { useFetchStore, useStore } from '@/store';
-import { shallow } from 'zustand/shallow';
+import { formAtom, shouldFetchAtom } from '@/store';
+import { Product, UrlParams } from '@/services/crawler';
+import ProductSearchForm from '@/components/ProductSearchForm';
+import ProductsList from '@/components/ProductsList';
 
 const inter = Inter({ subsets: ['latin'] });
 
+export default function Home() {
+  const shouldFetch = useAtomValue(shouldFetchAtom);
+  const { source, category, query } = useAtomValue(formAtom);
+  const { data: products, error, isLoading } = useSWR(
+    shouldFetch ? ['/api/products', source, category, query] : null,
+    ([slug, source, category, query]) => (
+      fetchProducts(slug, source as UrlParams['source'], category as UrlParams['category'], query as UrlParams['query'])
+  ));
+
+  console.log(products);
+
+  return (
+    <main
+      className={`${inter.className} flex min-h-screen flex-col items-center justify-between p-24`}
+    >
+      <ProductSearchForm />
+      {
+        !isLoading && products && products.length > 0 ? (
+          <ProductsList products={products as Product[]} />
+        ) : null
+      }
+    </main>
+  );
+}
+
 async function fetchProducts(
+  slug: string,
   source: UrlParams['source'],
   category: UrlParams['category'],
   query: UrlParams['query']
 ) {
-  const url = new URL('http://localhost:3000/api/products');
+  // const url = new URL('http://localhost:3000/api/products');
+  // const url = new URL('http://192.168.1.253:3000/api/products');
+  const url = new URL(`http://192.168.1.253:3000${slug}`);
   url.searchParams.append('source', source);
   url.searchParams.append('category', category.toLowerCase());
   if (query !== '') {
@@ -22,42 +51,5 @@ async function fetchProducts(
 
   const response = await fetch(url.href);
   const products = await response.json();
-
-  return products;
-}
-
-export default function Home() {
-  let productsList = [];
-
-  const { source, category, query } = useStore(
-    (state) => ({
-      source: state.source,
-      category: state.category,
-      query: state.query,
-    }),
-    shallow
-  );
-
-  const toggleShouldFetch = useFetchStore((state) => state.toggleShouldFetch);
-
-  const unsub = useFetchStore.subscribe(async (state) => {
-    
-    if (state) {
-      productsList = await fetchProducts(
-        source as UrlParams['source'],
-        category as UrlParams['category'],
-        query as UrlParams['query']
-      );
-      toggleShouldFetch();
-    }
-  });
-
-  return (
-    <main
-      className={`${inter.className} flex min-h-screen flex-col items-center justify-between p-24`}
-    >
-      <ProductSearchForm />
-      {/* <p>{prod}</p> */}
-    </main>
-  );
+  return Object.values(products) as Product[];
 }

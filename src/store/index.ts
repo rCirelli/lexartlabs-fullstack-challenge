@@ -1,25 +1,15 @@
-import { create } from "zustand";
-import { subscribeWithSelector } from 'zustand/middleware'
+import { atom } from "jotai";
 
-export interface State {
+export interface FormState {
   source: string;
   category: string;
   query: string;
-  setState: (key: keyof State, value: string) => void;
-  shouldFetch?: boolean;
-  toggleShouldFetch?: () => void;
 }
 
-export const useStore = create<State>()((set) => ({
-  source: "",
-  category: "",
-  query: "",
-  setState: (key: keyof State, value: string) => set(() => ({ [key]: value })),
-  // shouldFetch: false,
-  // toggleShouldFetch: () => set((state) => ({ shouldFetch: !state.shouldFetch })),
-}));
+export const shouldFetchAtom = atom(false);
 
-export const useFetchStore = create(subscribeWithSelector((set, get, api) => ({
-  shouldFetch: false,
-  toggleShouldFetch: () => set((state: State) => ({ shouldFetch: !state.shouldFetch })),
-})));
+export const formAtom = atom({
+  source: '',
+  category: '',
+  query: '',
+});
