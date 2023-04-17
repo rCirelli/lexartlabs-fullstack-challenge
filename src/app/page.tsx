@@ -11,14 +11,13 @@ const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
   const shouldFetch = useAtomValue(shouldFetchAtom);
+  // const setShouldFetch = useSetAtom(shouldFetchAtom);
   const { source, category, query } = useAtomValue(formAtom);
   const { data: products, error, isLoading } = useSWR(
     shouldFetch ? ['/api/products', source, category, query] : null,
     ([slug, source, category, query]) => (
       fetchProducts(slug, source as UrlParams['source'], category as UrlParams['category'], query as UrlParams['query'])
   ));
-  console.log(source, category, query);
-  console.log(products);
 
   return (
     <main

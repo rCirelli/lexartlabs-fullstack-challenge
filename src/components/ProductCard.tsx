@@ -1,6 +1,5 @@
 import { Product } from "@/services/crawler";
 import Image from "next/image";
-// import Link from "next/link";
 
 function ProductCard({ product }:{ product: Product}) {
   return ( 
