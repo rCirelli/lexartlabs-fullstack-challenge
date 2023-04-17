@@ -39,7 +39,8 @@ async function fetchProducts(
   category: UrlParams['category'],
   query: UrlParams['query']
 ) {
-  const url = new URL(`http://localhost:3000${slug}`);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const url = new URL(`${baseUrl}${slug}`);
   url.searchParams.append('source', source);
   url.searchParams.append('category', category.toLowerCase());
   if (query !== '') {
